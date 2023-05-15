@@ -1,11 +1,11 @@
 Package: AnalisisDeNombres
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Análisis de nombres con Base de datos de nacimientos. Municipalidad de Rosario
 Version: 0.1.0
-Author: Who wrote it
+Author: Nicolas Gamboa
 Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Este paquete contiene funciones que se encargarán de analisar los nombres de los    
+nacidos que se encuentren registrados en una base de datos.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true

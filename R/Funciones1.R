@@ -31,6 +31,23 @@ hello <- function(datos) {
     "regcivil", "acta","tiporegistro" , "Sexo.", "departamento", "localidad", "Distrito municipal.","Seccional policial."
   )
 
+  # INTENTO DE CHEQUEAR COLUMNAS, NO FUNCIONA
+
+  # if (names(datos_filtrados) == c("nombre","apellido","Fecha nacimiento.",
+  #                                 "Ocurrio en.","Edad de la madre." ,"Lugar de residencia.",
+  #                                 "regcivil","acta","tiporegistro",
+  #                                 "Sexo.", "departamento","localidad",
+  #                                 "Distrito municipal.","Seccional policial." )) {
+  #
+  # }
+  #
+  # c("nombre","apellido","Fecha nacimiento.",
+  #  "Ocurrio en.","Edad de la madre." ,"Lugar de residencia.",
+  #  "regcivil","acta","tiporegistro",
+  #  "Sexo.", "departamento","localidad",
+  #  "Distrito municipal.","Seccional policial." )
+
+
   ## Guardo los nombres originales en una columna----
   datos_filtrados$nombre_tipeado <- datos_filtrados$nombre
 
@@ -87,7 +104,6 @@ hello <- function(datos) {
   }
 
 
-
   #
   ## Buscamos cuantos nombres tiene una persona como maximo-----
   #
@@ -104,26 +120,34 @@ hello <- function(datos) {
     stop("Hubo un error en el filtrado de los nombres.\nLa cantidad de nombres no coincide con la cantidad de\nnacidos que en teoría tienen al menos un nombre.\n")
   }
 
+
+  datos2 <- datos1
+
   cant_nombres <- c("Primero", "Segundo")
 
   if (maximo>=3) {cant_nombres <- c(cant_nombres, "Tercero")}
   if (maximo>=4) {cant_nombres <- c(cant_nombres, "Cuarto")}
   if (maximo>=5) {cant_nombres <- c(cant_nombres, "Quinto")}
-  if (maximo>=5) {cant_nombres <- c(cant_nombres, "Sexto")}
+  if (maximo>=6) {cant_nombres <- c(cant_nombres, "Sexto")}
 
-  datos2$cantidad_nombres <- rep(NA,length(lista_nombres))
+
   # datos2$Primero <- rep(NA,length(lista_nombres))
   # datos2$Segundo <- rep(NA,length(lista_nombres))
   # if (maximo>=3) {datos2$Tercero <- rep(NA,length(lista_nombres))}
   # if (maximo>=4) {datos2$Cuarto <- rep(NA,length(lista_nombres))}
   # if (maximo>=5) {datos2$Quinto <- rep(NA,length(lista_nombres))}
 
-  for (i in 1:maximo) {
+  # creamos las columnas de cada posicion de nombre
+
+  for (i in cant_nombres) {
     datos2 <- datos2 %>%
-      mutate(a = NA)
-    datos2 <- datos2 %>%
-      rename(cant_nombres[i] = a)
+      mutate(nomb = NA)
+    names(datos2)[length(names(datos2))] <- i
   }
+
+  datos2$cantidad_nombres <- rep(NA,length(lista_nombres))
+
+  # Llenamos la columna de los nombres y la de cantidad de nombres
 
   # p <- 0
   for(i in 1:length(lista_nombres)){
@@ -131,10 +155,6 @@ hello <- function(datos) {
       datos2[i,cant_nombres[j]] <- lista_nombres[[i]][j]
     }
     datos2$cantidad_nombres[i] <- length(lista_nombres[[i]])
-    # if(round(i/length(lista_nombres)*100)>p){
-    #   p <- round(i/length(lista_nombres)*100)
-    #   print(paste0(p,"%"))
-    # }
   }
 
 
@@ -177,6 +197,70 @@ hello <- function(datos) {
     }
   }
 
+  datos3 <- rbind(datos2_hombres,datos2_mujeres)
+
+  if(nrow(datos3) != nrow(datos2)){
+    stop("Los tamaños de las bases antes y después de la correccion no coinciden")
+  }
+
+  for (i in cant_nombres) {
+    datosFaltantes <- datosFaltantes %>%
+      mutate(nomb = NA)
+    names(datosFaltantes)[length(names(datosFaltantes))] <- i
+  }
+
+  datosFaltantes$cantidad_nombres <- rep("No disponible",nrow(datosFaltantes))
+
+  datos_print <- rbind(datos3,datosFaltantes)
+
+  View(datos_print)
+
+  # en caso de querer ver la base con las columnas de nombres agregadas
+  # write.xlsx(datos_print, "./Bases_creadas/base_nombres_arreglada.xlsx)
+
+
+
+
+  # CREAMOS LA BASE FINAL PARA EL AN?LISIS-----
+  # names(datos_print)
+
+  data_long <- gather(datos_print[,c(-2:-1)],
+                      posicion,
+                      nombre_ind,
+                      Primero:Tercero,
+                      na.rm = T
+  )
+
+  rm(datos1,datos2,datos2_hombres,datos2_mujeres,datos3,datosFaltantes)
+  rm(datos_filtrados)
+
+
+
+  faltantes_final <- datos_print %>%
+    filter(is.na(Primero)) %>%
+    select(c(-2:-1), -Segundo, -Tercero, -Primero)
+  faltantes_final$posicion <- NA
+  faltantes_final$nombre_ind <- NA
+
+  names(faltantes_final) == names(data_long)
+
+
+
+  nombres_final <- rbind(data_long, faltantes_final)
+  nombres_final$ID <- c(1:nrow(nombres_final))
+
+  class(nombres_final$`Fecha nacimiento.`)
+
+
+  write.xlsx(nombres_final,file = "nombres_individuales1*asdsad.xlsx")
+
+
+
+
+
+
 
 }
+
+
 

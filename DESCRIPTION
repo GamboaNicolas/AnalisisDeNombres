@@ -6,6 +6,9 @@ Author: Nicolas Gamboa
 Maintainer: gamboa.nicolas2002@gmail.com
 Description: Este paquete contiene funciones que se encargarán de analisar los nombres de los    
 nacidos que se encuentren registrados en una base de datos.
-License: What license is it under?
+License: MIT
+import: readxl,
+        tidyverse,
+        openxlsx
 Encoding: UTF-8
 LazyData: true

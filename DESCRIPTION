@@ -1,14 +1,11 @@
-Package: AnalisisDeNombres
+Package: analisisdenombres
 Type: Package
 Title: Análisis de nombres con Base de datos de nacimientos. Municipalidad de Rosario
-Version: 0.1.0
+Version: 0.1.1
 Author: Nicolas Gamboa
-Maintainer: gamboa.nicolas2002@gmail.com
-Description: Este paquete contiene funciones que se encargarán de analisar los nombres de los    
-nacidos que se encuentren registrados en una base de datos.
+Maintainer: Nicolas <gamboa.nicolas2002@gmail.com>
+Description: Este paquete contiene funciones que se encargarán de crear una base de datos de nombres a partir de una base de nacimientos en la municipalidad de Rosario.
 License: MIT
-import: readxl,
-        tidyverse,
-        openxlsx
+import: readxl, tidyverse, openxlsx, stringdist
 Encoding: UTF-8
 LazyData: true
